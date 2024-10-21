@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proximity Sensor Example</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #status {
+            font-size: 2em;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div id="status"></div>
+
+    <script>
+        // Check if the DeviceProximityEvent is supported
+        if ('ondeviceproximity' in window) {
+            window.addEventListener('deviceproximity', (event) => {
+                const statusElement = document.getElementById('status');
+                if (event.value < event.max) {
+                    statusElement.textContent = 'Ringing';
+                } else {
+                    statusElement.textContent = '';
+                }
+            });
+        } else {
+            document.getElementById('status').textContent = 'Proximity Sensor not supported';
+        }
+    </script>
+</body>
+</html>
