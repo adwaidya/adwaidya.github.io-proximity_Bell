@@ -23,16 +23,26 @@
     <div id="status"></div>
 
     <script>
-        // Check if the DeviceProximityEvent is supported
-        if ('ondeviceproximity' in window) {
-            window.addEventListener('deviceproximity', (event) => {
+        // Check if the ProximitySensor API is available
+        if ('ProximitySensor' in window) {
+            // Create a new ProximitySensor instance
+            const sensor = new ProximitySensor({ frequency: 10 });
+
+            sensor.addEventListener('reading', () => {
                 const statusElement = document.getElementById('status');
-                if (event.value < event.max) {
+                if (sensor.distance < sensor.max) {
                     statusElement.textContent = 'Ringing';
                 } else {
                     statusElement.textContent = '';
                 }
             });
+
+            sensor.addEventListener('error', event => {
+                console.error(event.error.name, event.error.message);
+            });
+
+            // Start the sensor
+            sensor.start();
         } else {
             document.getElementById('status').textContent = 'Proximity Sensor not supported';
         }
