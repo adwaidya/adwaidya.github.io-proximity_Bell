@@ -1,51 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proximity Sensor Example</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-        #status {
-            font-size: 2em;
-            color: red;
-        }
-    </style>
+    <title>Proximity Sensor Detection</title>
 </head>
 <body>
-    <div id="status"></div>
+    <div id="detection-status"></div>
 
     <script>
-        // Check if the ProximitySensor API is available
-        if ('ProximitySensor' in window) {
-            // Create a new ProximitySensor instance
-            const sensor = new ProximitySensor({ frequency: 10 });
+        // Function to handle proximity sensor changes
+        function handleProximity(event) {
+            const proximity = event.target.value;
 
-            sensor.addEventListener('reading', () => {
-                const statusElement = document.getElementById('status');
-                if (sensor.distance < sensor.max) {
-                    statusElement.textContent = 'Ringing';
-                } else {
-                    statusElement.textContent = '';
-                }
-            });
-
-            sensor.addEventListener('error', event => {
-                console.error(event.error.name, event.error.message);
-            });
-
-            // Start the sensor
-            sensor.start();
-        } else {
-            document.getElementById('status').textContent = 'Proximity Sensor not supported';
+            if (proximity === 0) {
+                document.getElementById("detection-status").textContent = "Object Detected";
+            } else {
+                document.getElementById("detection-status").textContent = "";
+            }
         }
+
+        // Access the proximity sensor
+        navigator.permissions.query({ name: "proximity-sensor" }).then((result) => {
+            if (result.state === "granted") {
+                const proximitySensor = new ProximitySensor({ frequency: 60 }); // Adjust frequency as needed
+                proximitySensor.addEventListener("reading", handleProximity);
+                proximitySensor.start();
+            } else {
+                console.error("Proximity sensor permission denied.");
+            }
+        });
     </script>
 </body>
 </html>
